@@ -7,20 +7,36 @@
 //
 
 import UIKit
-
+import AVFoundation
 
 class ViewController: UIViewController {
     
-    
+    var player: AVAudioPlayer?
 
     override func viewDidLoad() {
         super.viewDidLoad()
     }
 
     @IBAction func buttonPressed(_ sender: UIButton) {
-        
+        playSound(sender.currentTitle!)
     }
-
+    
+    
+    func playSound(_ soundToPlay: String) {
+        guard let url = Bundle.main.url(forResource: soundToPlay, withExtension: "wav") else { return }
+        do {
+            try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default)
+            try AVAudioSession.sharedInstance().setActive(true)
+            
+            player = try AVAudioPlayer(contentsOf: url, fileTypeHint: AVFileType.mp3.rawValue)
+            
+            guard let player = player else { return }
+            
+            player.play()
+        } catch {
+            print("***** \(error.localizedDescription)")
+        }
+    }
     
     
 
